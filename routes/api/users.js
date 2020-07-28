@@ -8,10 +8,73 @@ const passport = require("passport");
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
+const validatePasswordChange = require("../../validation/profile.js");
 
 //Models
 const User = require("../../models/User");
+const Item = require('../../models/Item');
 
+//image processing
+// var fs = require('fs');
+// var multer = require('multer');
+//
+// router.use(
+//   multer({
+//     dest: './uploads/',
+//     rename: function (fieldname, filename) {
+//       return filename;
+//     },
+//   }).single('photo')
+// );
+//
+// router.post('photo', function(req,res){
+//   var newItem = new Item();
+//   newItem.img.data = fs.readFileSync(req.files.userPhoto.path)
+//   newItem.img.contentType = ‘image/png’;
+//   newItem.save();
+// });
+
+router.post("/changeProfile", (req, res) => {
+  const {errors, isValid} = validatePasswordChange(req.body);
+  const {name, email, oldpassword, password} = req.body;
+
+  if(!isValid) {
+    console.log("hello");
+    return res.status(400).json(errors);
+  }
+  User.findOne({email: email}).then(user => {
+    if(name != user.name) {
+      user.name = name;
+      user
+        .save()
+        .catch(err => console.log(err));
+    }
+    bcrypt.compare(oldpassword, user.password).then(isMatch => {
+      if (isMatch) {
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(password, salt, (err, hash) => {
+            if (err) throw err;
+            user.password = hash;
+            user
+              .save()
+              .catch(err => console.log(err));
+          });
+          return res
+            .status(400)
+            .json({success: "Profile Saved"})
+        });
+
+      } else {
+        console.log("bad password");
+        return res
+          .status(400)
+          .json({ passwordincorrect: "Password incorrect" });
+      }
+    });
+  })
+
+
+})
 // @route POST api/users/register
 // @desc Register user
 // @access Public

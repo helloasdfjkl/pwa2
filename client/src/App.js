@@ -51,7 +51,7 @@ class App extends Component {
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
               <PrivateRoute exact path = "/manage/todotab/:id" component = {ToDo}/>
               <PrivateRoute exact path = "/manage/todotab" component = {ToDoTab}/>
-              <Route exact path = "/profile" component = {Profile}/>
+              <PrivateRoute exact path = "/profile" component = {Profile}/>
             </Switch>
           </div>
         </Router>

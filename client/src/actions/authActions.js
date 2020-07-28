@@ -68,3 +68,17 @@ export const logoutUser = () => dispatch => {
   // Set current user to empty object {} which will set isAuthenticated to false
   dispatch(setCurrentUser({}));
 };
+
+//change password in Profile
+export const changeProfile = (userData, history) => dispatch => {
+  console.log("authAction change password");
+  axios
+    .post("/api/users/changeProfile", userData)
+    .then(res => history.push("/"))
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    )
+};

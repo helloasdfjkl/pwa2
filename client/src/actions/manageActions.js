@@ -13,13 +13,7 @@ export const addTask = (taskData, history) => dispatch => {
     )
 }
 
-export const deleteTask = (data, history) => dispatch => {
-  const taskData = {
-    task: data[0],
-    index: data[1],
-    email: data[2],
-    listName: data[3],
-  }
+export const deleteTask = (taskData, history) => dispatch => {
   //console.log("task data: " + taskData.task + " " + taskData.deadline + " " + taskData.email)
   axios.post("/api/manage/deleteTask", taskData)
   .catch(err => console.log(err))

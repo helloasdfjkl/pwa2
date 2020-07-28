@@ -102,6 +102,7 @@ class ToDo extends Component {
   }
 
   handleChange = date => {
+    console.log("date: " + date)
     this.setState({
       deadline: date
     });
@@ -122,6 +123,11 @@ class ToDo extends Component {
       email: user.email,
       listName: listName
     };
+    console.log("taskData deadline: " + taskData.deadline)
+    console.log(
+    taskData.deadline.getFullYear() + " " +
+    (taskData.deadline.getMonth() + 1) + "/" +
+    taskData.deadline.getDate())
     console.log("Adding " + taskData.task + " " + taskData.deadline + " " + user.email + " " + listName)
     this.props.addTask(taskData);
     window.location.reload();
@@ -129,9 +135,13 @@ class ToDo extends Component {
   deleteTask = e => {
     const {user} = this.props.auth, listName = this.props.location.state.name;
     e.preventDefault();
-    // console.log("NAME: " + e.target.name);
-    //console.log("INDEX: " + e.target.id);
-    this.props.deleteTask([e.target.name, e.target.id, user.email, listName]);
+    const taskData = {
+      task: e.target.name,
+      index: parseInt(e.target.id, 10) + 1,
+      email: user.email,
+      listName: listName,
+    }
+    this.props.deleteTask(taskData);
     window.location.reload();
   }
 

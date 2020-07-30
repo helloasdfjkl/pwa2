@@ -13,7 +13,14 @@ class Navbar extends Component {
 
   render() {
     return (
-      <nav style = {{marginBottom: 20}} className="navbar navbar-expand-lg navbar-light bg-light">
+      <nav
+        style = {{
+          marginBottom: 20,
+          width: '80vw',
+          float: 'right'
+        }}
+        className="navbar navbar-expand-lg navbar-light bg-light"
+      >
         <Link
           to="/dashboard"
           className="col s5 brand-logo center black-text navbar-brand"
@@ -28,7 +35,7 @@ class Navbar extends Component {
           <ul className="navbar-nav mr-auto">
             <li className = "nav-item">
               <Link to = "/dashboard" className="nav-link">
-                Landing~~
+                ~figma~
               </Link>
             </li>
             <li className = "nav-item">

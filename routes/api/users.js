@@ -48,7 +48,12 @@ router.post("/changeProfile", (req, res) => {
       user
         .save()
         .catch(err => console.log(err));
+      if(password == "") {
+        return res.status(400).json({success: "Profile Changed"});
+      }
     }
+
+    if(password != "") {
     bcrypt.compare(oldpassword, user.password).then(isMatch => {
       if (isMatch) {
         bcrypt.genSalt(10, (err, salt) => {
@@ -59,9 +64,6 @@ router.post("/changeProfile", (req, res) => {
               .save()
               .catch(err => console.log(err));
           });
-          return res
-            .status(400)
-            .json({success: "Profile Saved"})
         });
 
       } else {
@@ -71,6 +73,7 @@ router.post("/changeProfile", (req, res) => {
           .json({ passwordincorrect: "Password incorrect" });
       }
     });
+  }
   })
 
 
@@ -146,6 +149,7 @@ router.post("/login", (req, res) => {
           _id: user._id,
           name: user.name,
           email: user.email,
+
         };
 
         // Sign token

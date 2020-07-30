@@ -14,16 +14,20 @@ module.exports = function validatePasswordChange(data) {
   const empty3 = Validator.isEmpty(data.password2);
 
   if (empty1 && empty2 && empty3) {
-    
+
   } else if (empty1 || empty2 || empty3) {
     errors.oldpassword = "All password fields are required";
   }
 
-  else if (!Validator.isLength(data.password, { min: 6, max: 30 })) {
+  if (empty1 && empty2 && empty3) {
+
+  } else if (!Validator.isLength(data.password, { min: 6, max: 30 })) {
     errors.password = "New password must be at least 6 characters";
   }
 
-  if (!Validator.equals(data.password, data.password2)) {
+  if (empty1  && empty2 && empty3) {
+
+  } else if (!Validator.equals(data.password, data.password2)) {
     errors.password2 = "Passwords must match";
   }
 

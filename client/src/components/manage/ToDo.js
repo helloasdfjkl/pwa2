@@ -66,53 +66,10 @@ class ToDo extends Component {
     })
   }
 
-  //COLOR!!!!
-  handleChangeComplete = (color) => {
-   this.setState({ background: color.hex });
-   console.log("changed color of task " + this.state.editing + " to " + this.state.background)
-   const taskData = {
-     color: this.state.background,
-     task: this.state.editing,
-     listName: this.props.location.state.name,
-     email: this.props.auth.user.email
-   }
-   this.props.changeTaskBackgroundColor(taskData);
- };
-
-  _handleFocus(text) {
-      console.log('Focused with text: ' + text + "at index " + this.state.indexForEditingElement);
-  }
-
-  _handleFocusOut(text) {
-    const {user} = this.props.auth;
-    console.log('Left editor with text: ' + text);
-    let listName = this.props.location.state.name;
-    let hookElement = this.state.hookElement;
-    this.setState({hookElement: false})
-    const taskData = {
-      listName: listName,
-      text: text,
-      //type: 0-task 1-deadline
-      type: 0,
-      email: user.email,
-      index: this.state.indexForEditingElement
-    }
-    this.props.editText(taskData);
-    window.location.reload();
-  }
-
-  handleChange = date => {
-    console.log("date: " + date)
-    this.setState({
-      deadline: date
-    });
-  };
-
   //BASIC
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value});
   }
-
   //BASIC TASK FUNCTIONS
   addTask = e => {
     e.preventDefault();
@@ -144,7 +101,6 @@ class ToDo extends Component {
     this.props.deleteTask(taskData);
     window.location.reload();
   }
-
   //SUBTASKS
   createSubtask = e => {
     e.preventDefault();
@@ -173,7 +129,6 @@ class ToDo extends Component {
     let {hookSubtaskElement, indexForCreatingSubtask} = this.state;
     this.setState({hookSubtaskElement: false, indexForCreatingSubtask: -1})
   }
-
   //TO EDIT A TASK
   //text
   edit = e => {
@@ -202,6 +157,38 @@ class ToDo extends Component {
     this.setState({isEditingText: false})
     this.props.editText(taskData);
   }
+  hookElement = e => {
+    let {editing, hookElement} = this.state;
+    e.preventDefault();
+    this.setState({ hookElement: true, indexForEditingElement: e.target.id});
+    console.log('now editing ' + editing + 'at index ' + e.target.id);
+  }
+   _handleFocus(text) {
+       console.log('Focused with text: ' + text + "at index " + this.state.indexForEditingElement);
+   }
+   _handleFocusOut(text) {
+     const {user} = this.props.auth;
+     console.log('Left editor with text: ' + text);
+     let listName = this.props.location.state.name;
+     let hookElement = this.state.hookElement;
+     this.setState({hookElement: false})
+     const taskData = {
+       listName: listName,
+       text: text,
+       //type: 0-task 1-deadline
+       type: 0,
+       email: user.email,
+       index: this.state.indexForEditingElement
+     }
+     this.props.editText(taskData);
+     window.location.reload();
+   }
+   handleChange = date => {
+     console.log("date: " + date)
+     this.setState({
+       deadline: date
+     });
+   };
   //checklist
   markComplete = e => {
     e.preventDefault();
@@ -227,19 +214,27 @@ class ToDo extends Component {
     }
     this.props.markComplete(taskData);
   }
-  //color
-  getElementToBeEdited = e => {
-    let {editing, hookElement} = this.state;
+  //COLOR
+  getColorChangeIndex = e => {
+    let {editing} = this.state;
     e.preventDefault();
-    this.setState({editing: e.target.name})
-    console.log('now editing ' + editing)
+    this.setState({editing: e.target.id})
   }
-  hookElement = e => {
-    let {editing, hookElement} = this.state;
-    e.preventDefault();
-    this.setState({ hookElement: true, indexForEditingElement: e.target.id});
-    console.log('now editing ' + editing + 'at index ' + e.target.id);
-  }
+  onColorChange = (color) => {
+    let {todoList, background, editing} = this.state;
+    const taskData = {
+      color: color.hex,
+      index: this.state.editing,
+      listName: this.props.location.state.name,
+      email: this.props.auth.user.email
+    }
+    let task = todoList[taskData.index];
+    task.splice(3, 1, color.hex);
+    todoList.splice(taskData.index, 1, task);
+    this.setState({ background: color.hex });
+    this.props.changeTaskBackgroundColor(taskData);
+ };
+
   render() {
     const { user } = this.props.auth;
     let list = this.state.todoList;
@@ -255,9 +250,9 @@ class ToDo extends Component {
               <small className="text-muted">
                 <br/>* FIX DATES!!! []
                 <br/>* add invalid alert when user tries to add a blank task []
+                Editing: {this.state.editing}
               </small>
             </div>
-
             <div >
               <form className = "col-6 mx-auto" onSubmit = {this.addTask}>
                 <div className = "input-group">
@@ -308,6 +303,7 @@ class ToDo extends Component {
                             </form>
                         </td>
                         <td>
+                        <div style = {{color: task[3], width: 20, height: 20}}>{task[3]}</div>
                         {this.state.isEditingText && this.state.indexForEditingElement == index ? (<div>
                           <input onChange = {this.onEdit}
                             type = "text"
@@ -344,11 +340,11 @@ class ToDo extends Component {
                                 <div>
                                   <p>{this.state.tooltipContent}</p>
                                   <BlockPicker color={ this.state.background }
-                                 onChangeComplete={ this.handleChangeComplete }/>
+                                 onChangeComplete={ this.onColorChange }/>
                                 </div>
                               )}>
-                              <form style = {{marginRight: 10}} name = {task[0]} onSubmit = {this.hookElement}>
-                                <button name = {task[0]} onClick = {this.getElementToBeEdited} data-tip = "Change Theme" className="btn-sm btn btn-outline-danger" >
+                              <form style = {{marginRight: 10}} name = {task[0]} id = {index} onSubmit = {this.getColorChangeIndex}>
+                                <button name = {task[0]} data-tip = "Change Theme" className="btn-sm btn btn-outline-danger" >
                                   <i><FaPaintBrush/></i>
                                   <ReactTooltip/>
                                 </button>
@@ -358,6 +354,7 @@ class ToDo extends Component {
                         </td>
                       </tr>:<tr>
                         <td>
+
                           {task[2] == 1 ?
                             <form name = {task} id = {index} onSubmit = {this.markComplete}>
                             <button style = {{ padding: 0,border: 'none',background: 'none'}}>
@@ -381,14 +378,15 @@ class ToDo extends Component {
                           />
                           <button className = "btn btn-sm btn-danger" onClick = {this.saveEdit}>Ok</button>
                         </div>)
-                        :
+                        :<div>
+                        <div style = {{color: task[3], width: 20, height: 20}}>{task[3]}</div>
                         <button
                           style = {{padding: 0, border: 'none', background: 'none'}}
                           name = {task[0]}
                           id = {index}
                           onClick = {this.edit}>
                           {task[0]}
-                        </button>
+                        </button></div>
                         }
                         </td>
                         <td>{task[1]}</td>
@@ -409,11 +407,11 @@ class ToDo extends Component {
                                 <div>
                                   <p>{this.state.tooltipContent}</p>
                                   <BlockPicker color={ this.state.background }
-                                 onChangeComplete={ this.handleChangeComplete }/>
+                                 onChangeComplete={ this.onColorChange }/>
                                 </div>
                               )}>
-                              <form style = {{marginRight: 10}} name = {task[0]} onSubmit = {this.hookElement}>
-                                <button name = {task[0]} onClick = {this.getElementToBeEdited} data-tip = "Change Theme" className="btn-sm btn btn-outline-danger" >
+                              <form style = {{marginRight: 10}} name = {task[0]} id = {index} onSubmit = {this.getColorChangeIndex}>
+                                <button name = {task[0]} data-tip = "Change Theme" className="btn-sm btn btn-outline-danger" >
                                   <i><FaPaintBrush/></i>
                                   <ReactTooltip/>
                                 </button>
@@ -445,22 +443,22 @@ class ToDo extends Component {
                             </div>
                           ) : null}</td>
                         <td>
-                        {task.length > 3 ? (
+                        {task.length > 4 ? (
                           <div>
                             <ul>
                               {task.map((subtask, index) => {
-                                return(<div>{index >= 3 ? (<li>{subtask[0]}</li>) : null }</div>)
+                                return(<div>{index >= 4 ? (<li>{subtask[0]}</li>) : null }</div>)
                               })}
                             </ul>
                           </div>
                         ) : null}
                         </td>
                         <td>
-                        {task.length > 3 ? (
+                        {task.length > 4 ? (
                           <div>
                             <ul>
                               {task.map((subtask, index) => {
-                                return(<div>{index >= 3 ? (<li>{subtask[1]}</li>) : null }</div>)
+                                return(<div>{index >= 4 ? (<li>{subtask[1]}</li>) : null }</div>)
                               })}
                             </ul>
                           </div>

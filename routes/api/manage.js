@@ -47,7 +47,7 @@ router.post("/addTask", (req, res) => {
   if(task.length != 0) {
   User.findOne({ email: email }).then(user => {
     let lists = user.todoList, foundList = lists.find(list => list[0] == listName), temp = foundList;
-    temp.push([task, deadline, "0"]);
+    temp.push([task, deadline, 0, "#ffffff"]);
     user.todoList.pull(foundList);
     user.todoList.push(temp);
     user.save(function(err, updatedUser) {

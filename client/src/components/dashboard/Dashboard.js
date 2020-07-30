@@ -16,13 +16,7 @@ class Dashboard extends Component {
 
     return (
       <div className="jumbotron container valign-wrapper">
-        <h1>Hey there, {user.name.split(" ")[0]}</h1>
-        <p className="flow-text grey-text text-darken-1">
-          You are logged into a full-stack MERN app 👏
-        </p>
-        <p className="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-        <hr className="my-4"/>
-        <h2>Your Activity Today</h2>
+        
       </div>
     );
   }

@@ -1,4 +1,8 @@
-## Configuration
+This is the in-progress personal web app created by Jamie Jhoe and I, led by David Kurniawan! Made completely with the MERN stack infrastructure. We worked on this over the summer of 2020. Jamie worked on the communication side, implementing features such as group chatting, synchronous editing, and setting up different types of users (organization, basic user, etc). I worked on the widgets and design, creating a fully functional to-do list and user-friendly interface with the ability to add in different widgets, such as notes and images!
+
+Demos will be uploaded eventually...
+
+## Configuration courtesy of https://github.com/rishipr/mern-auth
 
 Make sure to add your own `MONGOURI` from your [mLab](http://mlab.com) database in `config/keys.js`.
 
@@ -9,7 +13,7 @@ module.exports = {
 };
 ```
 
-## Quick Start
+## Quick Start courtesy of https://github.com/rishipr/mern-auth
 
 ```javascript
 // Install dependencies for server & client

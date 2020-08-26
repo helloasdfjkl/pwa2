@@ -2,7 +2,7 @@ This is the in-progress personal web app created by Jamie Jhoe and I, led by Dav
 
 Demos will be uploaded eventually...
 
-## Configuration courtesy of https://github.com/rishipr/mern-auth
+Configuration courtesy of https://github.com/rishipr/mern-auth -- We used @rishipr's mern-auth demo to implement our own user authentication program
 
 Make sure to add your own `MONGOURI` from your [mLab](http://mlab.com) database in `config/keys.js`.
 
@@ -12,8 +12,6 @@ module.exports = {
   secretOrKey: "secret"
 };
 ```
-
-## Quick Start courtesy of https://github.com/rishipr/mern-auth
 
 ```javascript
 // Install dependencies for server & client
